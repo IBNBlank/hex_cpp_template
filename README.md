@@ -137,36 +137,36 @@ This project is licensed under the terms of the Apache License 2.0 - see the [LI
      You should see output like this:
 
      ```shell
-     header:
-       seq: 6840
-       stamp:
-         secs: 1743256841
-         nsecs: 627260024
+     header: 
+       seq: 3949
+       stamp: 
+         secs: 1743266556
+         nsecs: 337166748
        frame_id: "odom"
      child_frame_id: "base_link"
-     pose:
-       pose:
-         position:
+     pose: 
+       pose: 
+         position: 
            x: 1.01
            y: 0.55
            z: 2.02
-         orientation:
+         orientation: 
            x: 0.0
            y: 0.0
            z: 0.0
            w: 1.0
-       covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-     twist:
-       twist:
-         linear:
+       covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+     twist: 
+       twist: 
+         linear: 
            x: 1.0
            y: 0.5
            z: 2.0
-         angular:
+         angular: 
            x: 0.1
            y: 0.05
            z: 0.0
-       covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+       covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
      ---
      ```
 
@@ -309,4 +309,3 @@ This project is licensed under the terms of the Apache License 2.0 - see the [LI
        - 0.0
      ---
      ```
-

@@ -25,8 +25,8 @@ def generate_launch_description():
                             output="screen",
                             parameters=[hex_cpp_template_param
                        ],
-                            remappings=[("/string_in", "/in"),
-                                        ("/string_out", "/out"),
+                            remappings=[("/string_in", "/string_in"),
+                                        ("/string_out", "/string_out"),
                                         ("/odom", "/odom")])
 
     return LaunchDescription([hex_cpp_template])

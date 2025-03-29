@@ -10,9 +10,9 @@
         # parameter
         <rosparam file="$(find hex_cpp_template)/config/ros1/hex_cpp_template.yaml"/>
         # subscribe
-        <remap from="/string_in" to="/in" />
+        <remap from="/string_in" to="/string_in" />
         # publish
-        <remap from="/string_out" to="/out" />
+        <remap from="/string_out" to="/string_out" />
         <remap from="/odom" to="/odom" />
     </node>
 </launch>

@@ -1,7 +1,7 @@
 /****************************************************************
- * Copyright 2023 Dong Zhaorui. All rights reserved.
+ * Copyright 2025 Dong Zhaorui. All rights reserved.
  * Author : Dong Zhaorui 847235539@qq.com
- * Date   : 2023-11-21
+ * Date   : 2025-03-28
  ****************************************************************/
 
 #include "hex_example/data_interface/ros2_interface.h"

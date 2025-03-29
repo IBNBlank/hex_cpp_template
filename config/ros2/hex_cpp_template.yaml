@@ -1,0 +1,11 @@
+hex_example:
+  ros__parameters:
+    # string
+    string_prefix: "hex_cpp_template"
+
+    # odom
+    odom_frame: "odom"
+    odom_child_frame: "base_link"
+    odom_vel_lin: [1.00, 0.50, 2.00]
+    odom_vel_ang: [0.10, 0.05, 0.00]
+    odom_child_in_frame: [1.01, 0.55, 2.02, 1.00, 0.00, 0.00, 0.00]

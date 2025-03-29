@@ -1,0 +1,18 @@
+<!--#######################################-->
+<!-- Copyright (c) 2023  Dong Zhaorui.     -->
+<!-- All rights reserved.                  -->
+<!-- Author: Dong Zhaorui 847235539@qq.com -->
+<!-- Date  : 2023-11-21                    -->
+<!--#######################################-->
+
+<launch> 
+    <node name="hex_cpp_template" pkg="hex_cpp_template" type="hex_cpp_template" output="screen" >
+        # parameter
+        <rosparam file="$(find hex_cpp_template)/config/ros1/hex_cpp_template.yaml"/>
+        # subscribe
+        <remap from="/string_in" to="/in" />
+        # publish
+        <remap from="/string_out" to="/out" />
+        <remap from="/odom" to="/odom" />
+    </node>
+</launch>

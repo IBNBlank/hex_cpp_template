@@ -1,17 +1,17 @@
 /****************************************************************
- * Copyright 2023 Dong Zhaorui. All rights reserved.
+ * Copyright 2025 Dong Zhaorui. All rights reserved.
  * Author : Dong Zhaorui 847235539@qq.com
- * Date   : 2023-11-20
+ * Date   : 2025-03-28
  ****************************************************************/
 
-#ifndef HEX_EXAMPLE_DATA_INTERFACE_ROS1_INTERFACE_H_
-#define HEX_EXAMPLE_DATA_INTERFACE_ROS1_INTERFACE_H_
+#ifndef HEX_CPP_TEMPLATE_DATA_INTERFACE_ROS2_INTERFACE_H_
+#define HEX_CPP_TEMPLATE_DATA_INTERFACE_ROS2_INTERFACE_H_
 
 #include <memory>
 #include <string>
 
-#include "ros/ros.h"
-#include "std_msgs/String.h"
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/string.hpp"
 
 namespace hex {
 namespace example {
@@ -27,10 +27,10 @@ class DataInterface {
 
   // Interface Handle
   void Log(LogLevel, const char*, ...);
-  inline void Work() { ros::spin(); }
-  inline void Shutdown() { ros::shutdown(); }
-  inline bool Ok() { return ros::ok(); }
-  inline double GetTime() { return ros::Time::now().toSec(); }
+  inline void Work() { rclcpp::spin(nh_ptr_); }
+  inline void Shutdown() { rclcpp::shutdown(); }
+  inline bool Ok() { return rclcpp::ok(); }
+  inline double GetTime() { return nh_ptr_->now().seconds(); }
 
   // Initialization Handle
   void Init(int, char*[], std::string, double, void (*)());
@@ -38,7 +38,7 @@ class DataInterface {
 
   // Parameter Handle
   inline const std::string& GetOutString() { return kout_string_; }
-  inline int32_t const GetMaxCount() { return kmax_count_; }
+  inline int32_t GetMaxCount() const { return kmax_count_; }
 
   // Publisher Handle
   void PublishOutString(const std::string&);
@@ -50,10 +50,10 @@ class DataInterface {
 
  protected:
   // Timer Handle
-  inline void TimerHandle(const ros::TimerEvent&) { timer_handle_(); }
+  inline void TimerHandle() { timer_handle_(); }
 
   // Subscriber Handle
-  void InStringHandle(const std_msgs::StringPtr&);
+  void InStringHandle(const std_msgs::msg::String::SharedPtr);
 
  private:
   DataInterface() = default;
@@ -67,18 +67,17 @@ class DataInterface {
   void TimerInit(double, void (*)());
 
   // Node Handle
-  ros::NodeHandle* nh_ptr_;
-  ros::NodeHandle* nh_local_ptr_;
+  std::shared_ptr<rclcpp::Node> nh_ptr_;
 
   // Timer Handle
-  ros::Timer timer_;
+  rclcpp::TimerBase::SharedPtr timer_;
   void (*timer_handle_)();
 
   // Publisher Handle
-  ros::Publisher out_string_pub_;
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr out_string_pub_;
 
   // Subscriber Handle
-  ros::Subscriber in_string_sub_;
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr in_string_sub_;
 
   // Parameters Handle
   std::string kout_string_;
@@ -92,4 +91,4 @@ class DataInterface {
 }  // namespace example
 }  // namespace hex
 
-#endif  // HEX_EXAMPLE_DATA_INTERFACE_ROS1_INTERFACE_H_
+#endif  // HEX_CPP_TEMPLATE_DATA_INTERFACE_ROS2_INTERFACE_H_

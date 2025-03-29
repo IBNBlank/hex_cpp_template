@@ -1,3 +1,0 @@
-hex_example:
-  ros__parameters:
-    out_string: "world"

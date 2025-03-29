@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<package format="3">
+    <name>hex_cpp_template</name>
+    <version>0.0.0</version>
+    <description>The hex_cpp_template package</description>
+    <maintainer email="847235539@qq.com">blank</maintainer>
+    <license>Apache-2.0</license>
+
+    <!-- ROS 1 -->
+    <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
+    
+    <build_depend condition="$ROS_VERSION == 1">roscpp</build_depend>
+    <build_depend condition="$ROS_VERSION == 1">std_msgs</build_depend>
+    <build_depend condition="$ROS_VERSION == 1">nav_msgs</build_depend>
+
+    <build_export_depend condition="$ROS_VERSION == 1">roscpp</build_export_depend>
+    <build_export_depend condition="$ROS_VERSION == 1">std_msgs</build_export_depend>
+    <build_export_depend condition="$ROS_VERSION == 1">nav_msgs</build_export_depend>
+
+    <exec_depend condition="$ROS_VERSION == 1">roscpp</exec_depend>
+    <exec_depend condition="$ROS_VERSION == 1">std_msgs</exec_depend>
+    <exec_depend condition="$ROS_VERSION == 1">nav_msgs</exec_depend>
+
+    <!-- ROS 2 -->
+    <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake</buildtool_depend>
+
+    <build_depend condition="$ROS_VERSION == 2">rclcpp</build_depend>
+    <build_depend condition="$ROS_VERSION == 2">std_msgs</build_depend>
+    <build_depend condition="$ROS_VERSION == 2">nav_msgs</build_depend>
+
+    <export>
+        <build_type condition="$ROS_VERSION == 2">ament_cmake</build_type>
+    </export>
+</package>

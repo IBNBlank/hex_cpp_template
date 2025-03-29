@@ -1,9 +1,15 @@
-cmake_minimum_required(VERSION 3.0.2)
-project(hex_example)
+cmake_minimum_required(VERSION 3.8)
+project(hex_cpp_template)
 
+set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_CXX_FLAGS "-std=c++14")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g -pthread")
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+message(STATUS "Your ROS version is ROS $ENV{ROS_VERSION}")
 set(HEX_ROS_VERSION $ENV{ROS_VERSION})
-message(STATUS "Your ROS version is ROS${HEX_ROS_VERSION}")
-
 add_definitions(-DHEX_ROS_VERSION=${HEX_ROS_VERSION}) 
 
 if (${HEX_ROS_VERSION} STREQUAL "1")
@@ -11,7 +17,9 @@ if (${HEX_ROS_VERSION} STREQUAL "1")
     find_package(catkin REQUIRED COMPONENTS
         roscpp
         std_msgs
+        nav_msgs
     )
+    find_package(hex_cpp_utils REQUIRED)
 
     catkin_package()
 
@@ -22,18 +30,19 @@ if (${HEX_ROS_VERSION} STREQUAL "1")
         ${catkin_INCLUDE_DIRS}
     )
 
-    add_executable(hex_example
-        hex_example/main.cpp
-        hex_example/hex_example.cpp
-        hex_example/data_interface/ros1_interface.cpp
+    add_executable(hex_cpp_template
+        hex_cpp_template/main.cc
+        hex_cpp_template/hex_cpp_template.cc
+        hex_cpp_template/data_interface/ros1_interface.cc
     )
 
-    target_link_libraries(hex_example
+    target_link_libraries(hex_cpp_template
         ${catkin_LIBRARIES}
+        hex_cpp_utils::hex_cpp_utils
     )
 
     install(
-        TARGETS hex_example
+        TARGETS hex_cpp_template
         DESTINATION lib/${PROJECT_NAME}
     )
 
@@ -49,16 +58,11 @@ if (${HEX_ROS_VERSION} STREQUAL "1")
 
 elseif (${HEX_ROS_VERSION} STREQUAL "2")
 
-    cmake_minimum_required(VERSION 3.8)
-    
-    if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        add_compile_options(-Wall -Wextra -Wpedantic)
-    endif()
-
     find_package(ament_cmake REQUIRED)
     find_package(rclcpp REQUIRED)
     find_package(std_msgs REQUIRED)
-
+    find_package(nav_msgs REQUIRED)
+    find_package(hex_cpp_utils REQUIRED)
     include_directories(
         ../
         ./
@@ -68,19 +72,21 @@ elseif (${HEX_ROS_VERSION} STREQUAL "2")
 
     ament_package()
 
-    add_executable(hex_example
-        hex_example/main.cpp
-        hex_example/hex_example.cpp
-        hex_example/data_interface/ros2_interface.cpp
+    add_executable(hex_cpp_template
+        hex_cpp_template/main.cc
+        hex_cpp_template/hex_cpp_template.cc
+        hex_cpp_template/data_interface/ros2_interface.cc
     )
 
-    ament_target_dependencies(hex_example
+    ament_target_dependencies(hex_cpp_template
         rclcpp
         std_msgs
+        nav_msgs
+        hex_cpp_utils::hex_cpp_utils
     )
 
     install(
-        TARGETS hex_example
+        TARGETS hex_cpp_template
         DESTINATION lib/${PROJECT_NAME}
     )
 

@@ -86,7 +86,7 @@ This project is licensed under the terms of the Apache License 2.0 - see the [LI
    catkin_make -DCMAKE_BUILD_TYPE=Release
 
    # For ROS2
-   colcon build -DCMAKE_BUILD_TYPE=Release
+   colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
    ```
 
 4. Source the `setup.bash` and run the test blow
@@ -193,7 +193,7 @@ This project is licensed under the terms of the Apache License 2.0 - see the [LI
      You should see output like this:
 
      ```shell
-     data: "hex_cpp_template: Hello, World;"
+     data: 'hex_cpp_template: Hello, World;'
      ---
      ```
 
@@ -207,12 +207,11 @@ This project is licensed under the terms of the Apache License 2.0 - see the [LI
 
      ```shell
      header:
-       seq: 6840
        stamp:
-         secs: 1743256841
-         nsecs: 627260024
-       frame_id: "odom"
-     child_frame_id: "base_link"
+         sec: 1743266135
+         nanosec: 446084799
+       frame_id: odom
+     child_frame_id: base_link
      pose:
        pose:
          position:
@@ -224,7 +223,43 @@ This project is licensed under the terms of the Apache License 2.0 - see the [LI
            y: 0.0
            z: 0.0
            w: 1.0
-       covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+       covariance:
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
      twist:
        twist:
          linear:
@@ -235,7 +270,43 @@ This project is licensed under the terms of the Apache License 2.0 - see the [LI
            x: 0.1
            y: 0.05
            z: 0.0
-       covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+       covariance:
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
+       - 0.0
      ---
      ```
 

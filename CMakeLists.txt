@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.8)
 project(hex_cpp_template)
 
 set(CMAKE_BUILD_TYPE "Release")
-set(CMAKE_CXX_FLAGS "-std=c++14")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g -pthread")
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(-Wall -Wextra -Wpedantic)
@@ -13,6 +12,7 @@ set(HEX_ROS_VERSION $ENV{ROS_VERSION})
 add_definitions(-DHEX_ROS_VERSION=${HEX_ROS_VERSION}) 
 
 if (${HEX_ROS_VERSION} STREQUAL "1")
+    set(CMAKE_CXX_FLAGS "-std=c++14")
 
     find_package(catkin REQUIRED COMPONENTS
         roscpp
@@ -57,6 +57,7 @@ if (${HEX_ROS_VERSION} STREQUAL "1")
     )
 
 elseif (${HEX_ROS_VERSION} STREQUAL "2")
+    set(CMAKE_CXX_FLAGS "-std=c++17")
 
     find_package(ament_cmake REQUIRED)
     find_package(rclcpp REQUIRED)
@@ -78,11 +79,14 @@ elseif (${HEX_ROS_VERSION} STREQUAL "2")
         hex_cpp_template/data_interface/ros2_interface.cc
     )
 
+    target_link_libraries(hex_cpp_template
+        hex_cpp_utils::hex_cpp_utils
+    )
+
     ament_target_dependencies(hex_cpp_template
         rclcpp
         std_msgs
         nav_msgs
-        hex_cpp_utils::hex_cpp_utils
     )
 
     install(

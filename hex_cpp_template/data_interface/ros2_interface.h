@@ -7,88 +7,77 @@
 #ifndef HEX_CPP_TEMPLATE_DATA_INTERFACE_ROS2_INTERFACE_H_
 #define HEX_CPP_TEMPLATE_DATA_INTERFACE_ROS2_INTERFACE_H_
 
+#include <hex_cpp_utils/interfaces.h>
+
 #include <memory>
+#include <rclcpp/rclcpp.hpp>
 #include <string>
 
-#include "rclcpp/rclcpp.hpp"
+#include "hex_cpp_template/data_interface/base_interface.h"
+#include "nav_msgs/msg/odometry.hpp"
 #include "std_msgs/msg/string.hpp"
 
 namespace hex {
-namespace example {
+namespace cpp_template {
 
-enum class LogLevel { kDebug = 0, kInfo, kWarn, kError, kFatal };
-
-class DataInterface {
+class DataInterface : public BaseInterface {
  public:
-  static DataInterface& GetDataInterface() {
+  static DataInterface& GetSingleton() {
     static DataInterface singleton;
     return singleton;
   }
 
   // Interface Handle
-  void Log(LogLevel, const char*, ...);
-  inline void Work() { rclcpp::spin(nh_ptr_); }
-  inline void Shutdown() { rclcpp::shutdown(); }
-  inline bool Ok() { return rclcpp::ok(); }
-  inline double GetTime() { return nh_ptr_->now().seconds(); }
+  void Log(HexLogLevel, const char*, ...) override;
+  inline void Shutdown() override { rclcpp::shutdown(); }
+  inline bool Ok() override { return rclcpp::ok(); }
+  inline hex_utils::HexStamp GetTime() override {
+    rclcpp::Time time = nh_ptr_->now();
+    return hex_utils::HexStamp(time.seconds(), time.nanoseconds());
+  }
+  inline void Work() override { rclcpp::spin(nh_ptr_); }
 
   // Initialization Handle
-  void Init(int, char*[], std::string, double, void (*)());
-  void Deinit();
-
-  // Parameter Handle
-  inline const std::string& GetOutString() { return kout_string_; }
-  inline int32_t GetMaxCount() const { return kmax_count_; }
+  bool Init(int, char*[], std::string, double, void (*)()) override;
+  bool Deinit() override;
 
   // Publisher Handle
-  void PublishOutString(const std::string&);
-
-  // Subscriber Handle
-  inline bool GetInStringFlag() { return in_string_flag_; }
-  inline void ResetInStringFlag() { in_string_flag_ = false; }
-  inline const std::string& GetInString() { return in_string_; }
+  void PubStringOut(const std::string&) override;
+  void PubOdom(const HexOdom&) override;
 
  protected:
   // Timer Handle
   inline void TimerHandle() { timer_handle_(); }
 
   // Subscriber Handle
-  void InStringHandle(const std_msgs::msg::String::SharedPtr);
+  void StringInHandle(const std_msgs::msg::String::SharedPtr);
 
  private:
   DataInterface() = default;
   virtual ~DataInterface() = default;
 
   // Initialization Handle
-  void ParameterInit();
-  void VariableInit();
-  void PublisherInit();
-  void SubscriberInit();
-  void TimerInit(double, void (*)());
+  void ParameterInit() override;
+  void VariableInit() override;
+  void PublisherInit() override;
+  void SubscriberInit() override;
+  void TimerInit(double, void (*)()) override;
 
   // Node Handle
   std::shared_ptr<rclcpp::Node> nh_ptr_;
 
   // Timer Handle
   rclcpp::TimerBase::SharedPtr timer_;
-  void (*timer_handle_)();
 
   // Publisher Handle
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr out_string_pub_;
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr string_out_pub_;
+  rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
 
   // Subscriber Handle
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr in_string_sub_;
-
-  // Parameters Handle
-  std::string kout_string_;
-  int32_t kmax_count_;
-
-  // Variable Handle
-  bool in_string_flag_;
-  std::string in_string_;
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr string_in_sub_;
 };
 
-}  // namespace example
+}  // namespace cpp_template
 }  // namespace hex
 
 #endif  // HEX_CPP_TEMPLATE_DATA_INTERFACE_ROS2_INTERFACE_H_

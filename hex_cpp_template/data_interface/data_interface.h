@@ -7,7 +7,7 @@
 #ifndef HEX_CPP_TEMPLATE_DATA_INTERFACE_DATA_INTERFACE_H_
 #define HEX_CPP_TEMPLATE_DATA_INTERFACE_DATA_INTERFACE_H_
 
-#define HEX_ROS_VERSION 1
+#define HEX_ROS_VERSION 2
 
 #if HEX_ROS_VERSION == 1
 #include "hex_cpp_template/data_interface/ros1_interface.h"

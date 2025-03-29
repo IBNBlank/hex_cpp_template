@@ -1,4 +1,4 @@
-hex_example:
+hex_cpp_template:
   ros__parameters:
     # string
     string_prefix: "hex_cpp_template"

@@ -38,7 +38,7 @@ struct HexParamOdom {
 class BaseInterface {
  public:
   BaseInterface() : string_in_flag_(false) {}
-  virtual ~BaseInterface() {};
+  virtual ~BaseInterface() {}
   BaseInterface(const BaseInterface&) = delete;
   BaseInterface& operator=(const BaseInterface&) = delete;
 

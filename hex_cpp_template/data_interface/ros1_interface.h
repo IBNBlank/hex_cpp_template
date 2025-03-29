@@ -31,7 +31,7 @@ class DataInterface : public BaseInterface {
   void Log(HexLogLevel, const char*, ...) override;
   inline void Shutdown() override { ros::shutdown(); }
   inline bool Ok() override { return ros::ok(); }
-  inline HexStamp GetTime() override {
+  inline hex_utils::HexStamp GetTime() override {
     ros::Time ros_time = ros::Time::now();
     return hex_utils::HexStamp(ros_time.sec, ros_time.nsec);
   }
@@ -42,9 +42,10 @@ class DataInterface : public BaseInterface {
       timer_->sleep();
     }
   }
+
   // Initialization Handle
   bool Init(int, char*[], std::string, double, void (*)()) override;
-  bool Deinit();
+  bool Deinit() override;
 
   // Publisher Handle
   void PubStringOut(const std::string&) override;

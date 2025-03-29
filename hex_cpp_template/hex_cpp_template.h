@@ -4,8 +4,8 @@
  * Date   : 2025-03-28
  ****************************************************************/
 
-#ifndef HEX_CPP_TEMPLATE_CPP_TEMPLATE_H_
-#define HEX_CPP_TEMPLATE_CPP_TEMPLATE_H_
+#ifndef HEX_CPP_TEMPLATE_HEX_CPP_TEMPLATE_H_
+#define HEX_CPP_TEMPLATE_HEX_CPP_TEMPLATE_H_
 
 #include <hex_cpp_utils/interfaces.h>
 
@@ -50,4 +50,4 @@ class HexCppTemplate {
 }  // namespace cpp_template
 }  // namespace hex
 
-#endif  // HEX_CPP_TEMPLATE_CPP_TEMPLATE_H_
+#endif  // HEX_CPP_TEMPLATE_HEX_CPP_TEMPLATE_H_

@@ -62,7 +62,8 @@ void HexCppTemplate::CreateMessage() {
       string_out_ += string_in_queue_.front() + ";";
       string_in_queue_.pop_front();
     }
-    data_interface.Log(HexLogLevel::kInfo, "string_out = %s", string_out_.c_str());
+    data_interface.Log(HexLogLevel::kInfo, "string_out = %s",
+                       string_out_.c_str());
   }
 
   // odom

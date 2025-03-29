@@ -6,6 +6,10 @@
 
 #include "hex_cpp_template/data_interface/ros1_interface.h"
 
+#include <memory>
+#include <string>
+#include <vector>
+
 namespace hex {
 namespace cpp_template {
 
@@ -88,7 +92,7 @@ void DataInterface::ParameterInit() {
   // odom
   std::vector<double> param_odom_vel_lin;
   std::vector<double> param_odom_vel_ang;
-  std::vector<double> param_odom_child_in_odom;
+  std::vector<double> param_odom_child_in_frame;
   nh_local_ptr_->param<std::string>("odom_frame", kparam_odom_.frame, "odom");
   nh_local_ptr_->param<std::string>("odom_child_frame",
                                     kparam_odom_.child_frame, "base_link");
@@ -97,19 +101,19 @@ void DataInterface::ParameterInit() {
   nh_local_ptr_->param<std::vector<double>>(
       "odom_vel_ang", param_odom_vel_ang, std::vector<double>({0.0, 0.0, 0.0}));
   nh_local_ptr_->param<std::vector<double>>(
-      "odom_child_in_frame", param_odom_child_in_odom,
+      "odom_child_in_frame", param_odom_child_in_frame,
       std::vector<double>({0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0}));
   kparam_odom_.vel_lin = Eigen::Vector3d(
       param_odom_vel_lin[0], param_odom_vel_lin[1], param_odom_vel_lin[2]);
   kparam_odom_.vel_ang = Eigen::Vector3d(
       param_odom_vel_ang[0], param_odom_vel_ang[1], param_odom_vel_ang[2]);
-  kparam_odom_.child_in_frame.matrix().block<3, 1>(0, 3) =
-      Eigen::Vector3d(param_odom_child_in_odom[0], param_odom_child_in_odom[1],
-                      param_odom_child_in_odom[2]);
+  kparam_odom_.child_in_frame.matrix().block<3, 1>(0, 3) = Eigen::Vector3d(
+      param_odom_child_in_frame[0], param_odom_child_in_frame[1],
+      param_odom_child_in_frame[2]);
   kparam_odom_.child_in_frame.matrix().block<3, 3>(0, 0) =
       Eigen::Quaterniond(
-          param_odom_child_in_odom[3], param_odom_child_in_odom[4],
-          param_odom_child_in_odom[5], param_odom_child_in_odom[6])
+          param_odom_child_in_frame[3], param_odom_child_in_frame[4],
+          param_odom_child_in_frame[5], param_odom_child_in_frame[6])
           .toRotationMatrix();
 }
 

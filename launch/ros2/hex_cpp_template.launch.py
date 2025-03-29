@@ -16,17 +16,21 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     hex_cpp_template_param = os.path.join(
-        get_package_share_directory("hex_cpp_template"), "config/ros2",
-        "hex_cpp_template.yaml")
+        get_package_share_directory("hex_cpp_template"),
+        "config",
+        "ros2",
+        "hex_cpp_template.yaml",
+    )
 
     hex_cpp_template = Node(name="hex_cpp_template",
                             package="hex_cpp_template",
                             executable="hex_cpp_template",
                             output="screen",
-                            parameters=[hex_cpp_template_param
-                       ],
-                            remappings=[("/string_in", "/string_in"),
-                                        ("/string_out", "/string_out"),
-                                        ("/odom", "/odom")])
+                            parameters=[hex_cpp_template_param],
+                            remappings=[
+                                ("/string_in", "/string_in"),
+                                ("/string_out", "/string_out"),
+                                ("/odom", "/odom"),
+                            ])
 
     return LaunchDescription([hex_cpp_template])

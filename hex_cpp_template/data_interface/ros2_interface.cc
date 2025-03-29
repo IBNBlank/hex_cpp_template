@@ -4,12 +4,16 @@
  * Date   : 2025-03-28
  ****************************************************************/
 
-#include "hex_example/data_interface/ros2_interface.h"
+#include "hex_cpp_template/data_interface/ros2_interface.h"
+
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace hex {
-namespace example {
+namespace cpp_template {
 
-void DataInterface::Log(LogLevel level, const char* format, ...) {
+void DataInterface::Log(HexLogLevel level, const char* format, ...) {
   char* buffer;
 
   va_list args;
@@ -23,23 +27,23 @@ void DataInterface::Log(LogLevel level, const char* format, ...) {
   }
 
   switch (level) {
-    case LogLevel::kDebug: {
+    case HexLogLevel::kDebug: {
       RCLCPP_DEBUG(nh_ptr_->get_logger(), "%s", buffer);
       break;
     }
-    case LogLevel::kInfo: {
+    case HexLogLevel::kInfo: {
       RCLCPP_INFO(nh_ptr_->get_logger(), "%s", buffer);
       break;
     }
-    case LogLevel::kWarn: {
+    case HexLogLevel::kWarn: {
       RCLCPP_WARN(nh_ptr_->get_logger(), "%s", buffer);
       break;
     }
-    case LogLevel::kError: {
+    case HexLogLevel::kError: {
       RCLCPP_ERROR(nh_ptr_->get_logger(), "%s", buffer);
       break;
     }
-    case LogLevel::kFatal: {
+    case HexLogLevel::kFatal: {
       RCLCPP_FATAL(nh_ptr_->get_logger(), "%s", buffer);
       break;
     }
@@ -53,7 +57,7 @@ void DataInterface::Log(LogLevel level, const char* format, ...) {
   free(buffer);
 }
 
-void DataInterface::Init(int argc, char* argv[], std::string name,
+bool DataInterface::Init(int argc, char* argv[], std::string name,
                          double period, void (*handle)()) {
   rclcpp::init(argc, argv);
   nh_ptr_ = std::make_shared<rclcpp::Node>(name);
@@ -64,49 +68,83 @@ void DataInterface::Init(int argc, char* argv[], std::string name,
   SubscriberInit();
   TimerInit(period, handle);
 
-  Log(LogLevel::kInfo,
+  Log(HexLogLevel::kInfo,
       "\033[1;32m %s: ### data interface init finish ### \033[0m", name.data());
+  return true;
 }
 
-void DataInterface::Deinit() {
+bool DataInterface::Deinit() {
   // timer
   timer_.reset();
 
   // pub
-  out_string_pub_.reset();
+  string_out_pub_.reset();
+  odom_pub_.reset();
 
   // sub
-  in_string_sub_.reset();
+  string_in_sub_.reset();
 
   // node
   nh_ptr_.reset();
 
   // shutdown
   Shutdown();
+
+  return true;
 }
 
 void DataInterface::ParameterInit() {
-  nh_ptr_->declare_parameter<std::string>("out_string", "hello");
-  nh_ptr_->declare_parameter<int32_t>("max_count", 10);
+  // string
+  nh_ptr_->declare_parameter<std::string>("string_prefix", "hex");
+  nh_ptr_->get_parameter("string_prefix", kparam_string_.prefix);
 
-  nh_ptr_->get_parameter("out_string", kout_string_);
-  nh_ptr_->get_parameter("max_count", kmax_count_);
+  // odom
+  nh_ptr_->declare_parameter<std::string>("odom_frame", "odom");
+  nh_ptr_->declare_parameter<std::string>("odom_child_frame", "base_link");
+  nh_ptr_->declare_parameter<std::vector<double>>(
+      "odom_vel_lin", std::vector<double>{0.0, 0.0, 0.0});
+  nh_ptr_->declare_parameter<std::vector<double>>(
+      "odom_vel_ang", std::vector<double>{0.0, 0.0, 0.0});
+  nh_ptr_->declare_parameter<std::vector<double>>(
+      "odom_child_in_frame",
+      std::vector<double>{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0});
+  std::vector<double> param_odom_vel_lin;
+  std::vector<double> param_odom_vel_ang;
+  std::vector<double> param_odom_child_in_frame;
+  nh_ptr_->get_parameter("odom_frame", kparam_odom_.frame);
+  nh_ptr_->get_parameter("odom_child_frame", kparam_odom_.child_frame);
+  nh_ptr_->get_parameter("odom_vel_lin", param_odom_vel_lin);
+  nh_ptr_->get_parameter("odom_vel_ang", param_odom_vel_ang);
+  nh_ptr_->get_parameter("odom_child_in_frame", param_odom_child_in_frame);
+  kparam_odom_.vel_lin = Eigen::Vector3d(
+      param_odom_vel_lin[0], param_odom_vel_lin[1], param_odom_vel_lin[2]);
+  kparam_odom_.vel_ang = Eigen::Vector3d(
+      param_odom_vel_ang[0], param_odom_vel_ang[1], param_odom_vel_ang[2]);
+  kparam_odom_.child_in_frame.matrix().block<3, 1>(0, 3) = Eigen::Vector3d(
+      param_odom_child_in_frame[0], param_odom_child_in_frame[1],
+      param_odom_child_in_frame[2]);
+  kparam_odom_.child_in_frame.matrix().block<3, 3>(0, 0) =
+      Eigen::Quaterniond(
+          param_odom_child_in_frame[3], param_odom_child_in_frame[4],
+          param_odom_child_in_frame[5], param_odom_child_in_frame[6])
+          .toRotationMatrix();
 }
 
 void DataInterface::VariableInit() {
-  in_string_flag_ = false;
-  in_string_ = "";
+  string_in_flag_ = false;
+  string_in_buffer_.clear();
 }
 
 void DataInterface::PublisherInit() {
-  out_string_pub_ =
-      nh_ptr_->create_publisher<std_msgs::msg::String>("out_string", 1);
+  string_out_pub_ =
+      nh_ptr_->create_publisher<std_msgs::msg::String>("string_out", 10);
+  odom_pub_ = nh_ptr_->create_publisher<nav_msgs::msg::Odometry>("odom", 10);
 }
 
 void DataInterface::SubscriberInit() {
-  in_string_sub_ = nh_ptr_->create_subscription<std_msgs::msg::String>(
-      "in_string", 1,
-      std::bind(&DataInterface::InStringHandle, this, std::placeholders::_1));
+  string_in_sub_ = nh_ptr_->create_subscription<std_msgs::msg::String>(
+      "string_in", 10,
+      std::bind(&DataInterface::StringInHandle, this, std::placeholders::_1));
 }
 
 void DataInterface::TimerInit(double period, void (*handle)()) {
@@ -116,20 +154,47 @@ void DataInterface::TimerInit(double period, void (*handle)()) {
       std::bind(&DataInterface::TimerHandle, this));
 }
 
-void DataInterface::PublishOutString(const std::string& out_string) {
-  std_msgs::msg::String::SharedPtr out_string_ptr(new std_msgs::msg::String);
-
-  out_string_ptr->data = out_string;
-
-  out_string_pub_->publish(*out_string_ptr);
+void DataInterface::PubStringOut(const std::string& out_string) {
+  std_msgs::msg::String::SharedPtr string_out_ptr(new std_msgs::msg::String);
+  string_out_ptr->data = out_string;
+  string_out_pub_->publish(*string_out_ptr);
 }
 
-void DataInterface::InStringHandle(std_msgs::msg::String::SharedPtr data) {
-  if (!in_string_flag_) {
-    in_string_ = data->data;
-    in_string_flag_ = true;
+void DataInterface::PubOdom(const HexOdom& odom) {
+  nav_msgs::msg::Odometry::SharedPtr odom_ptr(new nav_msgs::msg::Odometry);
+  odom_ptr->header.stamp = rclcpp::Time(odom.stamp.sec, odom.stamp.nsec);
+  odom_ptr->header.frame_id = kparam_odom_.frame;
+  odom_ptr->child_frame_id = kparam_odom_.child_frame;
+  odom_ptr->twist.twist.linear.x = odom.vel_lin.x();
+  odom_ptr->twist.twist.linear.y = odom.vel_lin.y();
+  odom_ptr->twist.twist.linear.z = odom.vel_lin.z();
+  odom_ptr->twist.twist.angular.x = odom.vel_ang.x();
+  odom_ptr->twist.twist.angular.y = odom.vel_ang.y();
+  odom_ptr->twist.twist.angular.z = odom.vel_ang.z();
+
+  // translation
+  Eigen::Vector3d translation = odom.base_in_odom.translation();
+  odom_ptr->pose.pose.position.x = translation.x();
+  odom_ptr->pose.pose.position.y = translation.y();
+  odom_ptr->pose.pose.position.z = translation.z();
+
+  // rotation
+  Eigen::Quaterniond quaternion(odom.base_in_odom.rotation());
+  odom_ptr->pose.pose.orientation.w = quaternion.w();
+  odom_ptr->pose.pose.orientation.x = quaternion.x();
+  odom_ptr->pose.pose.orientation.y = quaternion.y();
+  odom_ptr->pose.pose.orientation.z = quaternion.z();
+
+  // publish
+  odom_pub_->publish(*odom_ptr);
+}
+
+void DataInterface::StringInHandle(std_msgs::msg::String::SharedPtr data) {
+  if (!string_in_flag_) {
+    string_in_buffer_.push_back(data->data);
+    string_in_flag_ = true;
   }
 }
 
-}  // namespace example
+}  // namespace cpp_template
 }  // namespace hex
